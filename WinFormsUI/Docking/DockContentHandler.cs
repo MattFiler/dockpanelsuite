@@ -1145,14 +1145,19 @@ namespace WeifenLuo.WinFormsUI.Docking
             else
                 size = floatPane.FloatWindow.Size;
 
-            Point location;
+            Point location = new Point(0, 0);
             Rectangle rectPane = Pane.ClientRectangle;
             if (DockState == DockState.Document)
             {
-                if (Pane.DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Bottom)
-                    location = new Point(rectPane.Left, rectPane.Bottom - size.Height);
-                else
-                    location = new Point(rectPane.Left, rectPane.Top);
+                switch (Pane.DockPanel.DocumentTabStripLocation)
+                {
+                    case DocumentTabStripLocation.Bottom:
+                        location = new Point(rectPane.Left, rectPane.Bottom - size.Height);
+                        break;
+                    case DocumentTabStripLocation.Top:
+                        location = new Point(rectPane.Left, rectPane.Top);
+                        break;
+                }
             }
             else
             {

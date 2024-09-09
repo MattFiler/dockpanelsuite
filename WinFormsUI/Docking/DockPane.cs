@@ -376,6 +376,9 @@ namespace WeifenLuo.WinFormsUI.Docking
                 else
                     y = rectWindow.Y;
 
+                if (DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Hidden)
+                    height = 0;
+
                 return new Rectangle(x, y, width, height);
             }
         }

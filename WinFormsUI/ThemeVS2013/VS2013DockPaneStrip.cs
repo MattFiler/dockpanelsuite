@@ -601,21 +601,22 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
             GraphicsPath pathTab = GetTabOutline_Document(Tabs[index], true, true, true);
             path.AddPath(pathTab, true);
 
-            if (DockPane.DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Bottom)
+            switch (DockPane.DockPanel.DocumentTabStripLocation)
             {
-                path.AddLine(rectTab.Right, rectTab.Top, rectPaneClient.Right, rectTab.Top);
-                path.AddLine(rectPaneClient.Right, rectTab.Top, rectPaneClient.Right, rectPaneClient.Top);
-                path.AddLine(rectPaneClient.Right, rectPaneClient.Top, rectPaneClient.Left, rectPaneClient.Top);
-                path.AddLine(rectPaneClient.Left, rectPaneClient.Top, rectPaneClient.Left, rectTab.Top);
-                path.AddLine(rectPaneClient.Left, rectTab.Top, rectTab.Right, rectTab.Top);
-            }
-            else
-            {
-                path.AddLine(rectTab.Right, rectTab.Bottom, rectPaneClient.Right, rectTab.Bottom);
-                path.AddLine(rectPaneClient.Right, rectTab.Bottom, rectPaneClient.Right, rectPaneClient.Bottom);
-                path.AddLine(rectPaneClient.Right, rectPaneClient.Bottom, rectPaneClient.Left, rectPaneClient.Bottom);
-                path.AddLine(rectPaneClient.Left, rectPaneClient.Bottom, rectPaneClient.Left, rectTab.Bottom);
-                path.AddLine(rectPaneClient.Left, rectTab.Bottom, rectTab.Right, rectTab.Bottom);
+                case DocumentTabStripLocation.Bottom:
+                    path.AddLine(rectTab.Right, rectTab.Top, rectPaneClient.Right, rectTab.Top);
+                    path.AddLine(rectPaneClient.Right, rectTab.Top, rectPaneClient.Right, rectPaneClient.Top);
+                    path.AddLine(rectPaneClient.Right, rectPaneClient.Top, rectPaneClient.Left, rectPaneClient.Top);
+                    path.AddLine(rectPaneClient.Left, rectPaneClient.Top, rectPaneClient.Left, rectTab.Top);
+                    path.AddLine(rectPaneClient.Left, rectTab.Top, rectTab.Right, rectTab.Top);
+                    break;
+                case DocumentTabStripLocation.Top:
+                    path.AddLine(rectTab.Right, rectTab.Bottom, rectPaneClient.Right, rectTab.Bottom);
+                    path.AddLine(rectPaneClient.Right, rectTab.Bottom, rectPaneClient.Right, rectPaneClient.Bottom);
+                    path.AddLine(rectPaneClient.Right, rectPaneClient.Bottom, rectPaneClient.Left, rectPaneClient.Bottom);
+                    path.AddLine(rectPaneClient.Left, rectPaneClient.Bottom, rectPaneClient.Left, rectTab.Bottom);
+                    path.AddLine(rectPaneClient.Left, rectTab.Bottom, rectTab.Right, rectTab.Bottom);
+                    break;
             }
             return path;
         }
@@ -916,10 +917,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
 
             g.SetClip(rectTabStrip);
 
-            if (DockPane.DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Bottom)
-            {
-            }
-            else
+            if (DockPane.DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Top)
             {
                 Color tabUnderLineColor;
                 if (tabActive != null && DockPane.IsActiveDocumentPane)
@@ -985,10 +983,15 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
             rect.Width = tab.TabWidth;
             rect.Height = rectTabStrip.Height - DocumentTabGapTop;
 
-            if (DockPane.DockPanel.DocumentTabStripLocation == DocumentTabStripLocation.Bottom)
-                rect.Y = rectTabStrip.Y + DocumentStripGapBottom;
-            else
-                rect.Y = rectTabStrip.Y + DocumentTabGapTop;
+            switch (DockPane.DockPanel.DocumentTabStripLocation)
+            {
+                case DocumentTabStripLocation.Bottom:
+                    rect.Y = rectTabStrip.Y + DocumentStripGapBottom;
+                    break;
+                case DocumentTabStripLocation.Top:
+                    rect.Y = rectTabStrip.Y + DocumentTabGapTop;
+                    break;
+            }
 
             return rect;
         }
