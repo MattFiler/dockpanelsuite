@@ -75,9 +75,7 @@
     </Compile>
     <Compile Include="Docking\DockContentCollection.cs" />
     <Compile Include="Docking\DockContentHandler.cs" />
-    <Compile Include="Docking\DockPanel.DockDragHandler.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Docking\DockPanel.DockDragHandler.cs" />
     <Compile Include="Docking\Helpers\DockHelper.cs" />
     <Compile Include="Docking\NestedPaneCollection.cs" />
     <Compile Include="Docking\DockOutlineBase.cs" />
