@@ -1120,7 +1120,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
             if (tab.TabWidth == 0)
                 return;
 
-            var rectCloseButton = GetCloseButtonRect(rect);
+            var rectCloseButton = GetCloseButtonRect(tab);
             Rectangle rectIcon = new Rectangle(
                 rect.X + DocumentIconGapLeft,
                 rect.Y + rect.Height - DocumentIconGapBottom - DocumentIconHeight,
@@ -1268,8 +1268,7 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
                     toolTip = tab.Content.DockHandler.TabText;
 
                 var mousePos = PointToClient(MousePosition);
-                var tabRect = tab.Rectangle.Value;
-                var closeButtonRect = GetCloseButtonRect(tabRect);
+                var closeButtonRect = GetCloseButtonRect(tab);
                 var mouseRect = new Rectangle(mousePos, new Size(1, 1));
                 buttonUpdate = SetActiveClose(closeButtonRect.IntersectsWith(mouseRect) ? closeButtonRect : Rectangle.Empty);
             }
@@ -1309,12 +1308,14 @@ namespace WeifenLuo.WinFormsUI.ThemeVS2013
                 TryCloseTab(index);
         }
 
-        private Rectangle GetCloseButtonRect(Rectangle rectTab)
+        private Rectangle GetCloseButtonRect(TabVS2013 tab)
         {
-            if (Appearance != DockPane.AppearanceStyle.Document)
+            if (Appearance != DockPane.AppearanceStyle.Document || !tab.Content.DockHandler.CloseButtonVisible)
             {
                 return Rectangle.Empty;
             }
+
+            var rectTab = tab.Rectangle.Value;
 
             const int gap = 3;
             var imageSize = PatchController.EnableHighDpi == true ? rectTab.Height - gap * 2 : 15;
