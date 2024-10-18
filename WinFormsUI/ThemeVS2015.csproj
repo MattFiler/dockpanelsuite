@@ -68,9 +68,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ThemeVS2015\VS2015ThemeBase.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ThemeVS2015\VS2015ThemeBase.cs" />
     <Compile Include="ThemeVS2015\VS2015LightTheme.cs">
       <SubType>Component</SubType>
     </Compile>
