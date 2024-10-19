@@ -276,13 +276,17 @@ namespace WeifenLuo.WinFormsUI.Docking
                     if (Win32Helper.IsRunningOnMono)
                         return;
 
-                    NativeMethods.SetWindowPos(Form.Handle, IntPtr.Zero, 0, 0, 0, 0,
-                        Win32.FlagsSetWindowPos.SWP_NOACTIVATE |
-                        Win32.FlagsSetWindowPos.SWP_NOMOVE |
-                        Win32.FlagsSetWindowPos.SWP_NOSIZE |
-                        Win32.FlagsSetWindowPos.SWP_NOZORDER |
-                        Win32.FlagsSetWindowPos.SWP_NOOWNERZORDER |
-                        Win32.FlagsSetWindowPos.SWP_FRAMECHANGED);
+                    try
+                    {
+                        NativeMethods.SetWindowPos(Form.Handle, IntPtr.Zero, 0, 0, 0, 0,
+                            Win32.FlagsSetWindowPos.SWP_NOACTIVATE |
+                            Win32.FlagsSetWindowPos.SWP_NOMOVE |
+                            Win32.FlagsSetWindowPos.SWP_NOSIZE |
+                            Win32.FlagsSetWindowPos.SWP_NOZORDER |
+                            Win32.FlagsSetWindowPos.SWP_NOOWNERZORDER |
+                            Win32.FlagsSetWindowPos.SWP_FRAMECHANGED);
+                    }
+                    catch { }
                 }
             }
         }
