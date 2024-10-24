@@ -8,6 +8,9 @@ namespace WeifenLuo.WinFormsUI.Docking
 {
     public class DockContent : Form, IDockContent
     {
+        public bool IsAutoHide => DockState == DockState.DockBottomAutoHide || DockState == DockState.DockLeftAutoHide || DockState == DockState.DockRightAutoHide || DockState == DockState.DockTopAutoHide;
+        protected DockState _previousDockState = DockState.Unknown;
+
         public DockContent()
         {
             m_dockHandler = new DockContentHandler(this, new GetPersistStringCallback(GetPersistString));
