@@ -30,6 +30,7 @@
     <EnableDefaultItems>false</EnableDefaultItems>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Configurations>Debug;Release;Ship</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
