@@ -200,31 +200,46 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (DockState == DockState.DockLeft && rectDockArea.Width > 0)
             {
                 if (DockPanel.DockLeftPortion > 1)
-                    DockPanel.DockLeftPortion = Width + offset;
+                    DockPanel.DockLeftPortion = ClampPixelPortion(Width + offset);
                 else
-                    DockPanel.DockLeftPortion += ((double)offset) / (double)rectDockArea.Width;
+                    DockPanel.DockLeftPortion = ClampRatioPortion(DockPanel.DockLeftPortion + ((double)offset) / (double)rectDockArea.Width);
             }
             else if (DockState == DockState.DockRight && rectDockArea.Width > 0)
             {
                 if (DockPanel.DockRightPortion > 1)
-                    DockPanel.DockRightPortion = Width - offset;
+                    DockPanel.DockRightPortion = ClampPixelPortion(Width - offset);
                 else
-                    DockPanel.DockRightPortion -= ((double)offset) / (double)rectDockArea.Width;
+                    DockPanel.DockRightPortion = ClampRatioPortion(DockPanel.DockRightPortion - ((double)offset) / (double)rectDockArea.Width);
             }
             else if (DockState == DockState.DockBottom && rectDockArea.Height > 0)
             {
                 if (DockPanel.DockBottomPortion > 1)
-                    DockPanel.DockBottomPortion = Height - offset;
+                    DockPanel.DockBottomPortion = ClampPixelPortion(Height - offset);
                 else
-                    DockPanel.DockBottomPortion -= ((double)offset) / (double)rectDockArea.Height;
+                    DockPanel.DockBottomPortion = ClampRatioPortion(DockPanel.DockBottomPortion - ((double)offset) / (double)rectDockArea.Height);
             }
             else if (DockState == DockState.DockTop && rectDockArea.Height > 0)
             {
                 if (DockPanel.DockTopPortion > 1)
-                    DockPanel.DockTopPortion = Height + offset;
+                    DockPanel.DockTopPortion = ClampPixelPortion(Height + offset);
                 else
-                    DockPanel.DockTopPortion += ((double)offset) / (double)rectDockArea.Height;
+                    DockPanel.DockTopPortion = ClampRatioPortion(DockPanel.DockTopPortion + ((double)offset) / (double)rectDockArea.Height);
             }
+        }
+
+        //Dragging a splitter to the panel edge can push the portion out of bounds. The DockPanel portion setters throw on values <= 0 (and treat > 1 as a pixel size), so keep interactive drags within a valid range instead of crashing.
+        private static double ClampRatioPortion(double portion)
+        {
+            const double min = 0.01;
+            const double max = 0.99;
+            if (portion < min) return min;
+            if (portion > max) return max;
+            return portion;
+        }
+
+        private static double ClampPixelPortion(double pixels)
+        {
+            return pixels < MeasurePane.MinSize ? MeasurePane.MinSize : pixels;
         }
 
         #region IDragSource Members
