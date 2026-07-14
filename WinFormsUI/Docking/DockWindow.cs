@@ -199,31 +199,20 @@ namespace WeifenLuo.WinFormsUI.Docking
             Rectangle rectDockArea = DockPanel.DockArea;
             if (DockState == DockState.DockLeft && rectDockArea.Width > 0)
             {
-                if (DockPanel.DockLeftPortion > 1)
-                    DockPanel.DockLeftPortion = ClampPixelPortion(Width + offset);
-                else
-                    DockPanel.DockLeftPortion = ClampRatioPortion(DockPanel.DockLeftPortion + ((double)offset) / (double)rectDockArea.Width);
+                // Always store as a ratio so window resize keeps scaling the layout.
+                DockPanel.DockLeftPortion = ClampRatioPortion(((double)(Width + offset)) / rectDockArea.Width);
             }
             else if (DockState == DockState.DockRight && rectDockArea.Width > 0)
             {
-                if (DockPanel.DockRightPortion > 1)
-                    DockPanel.DockRightPortion = ClampPixelPortion(Width - offset);
-                else
-                    DockPanel.DockRightPortion = ClampRatioPortion(DockPanel.DockRightPortion - ((double)offset) / (double)rectDockArea.Width);
+                DockPanel.DockRightPortion = ClampRatioPortion(((double)(Width - offset)) / rectDockArea.Width);
             }
             else if (DockState == DockState.DockBottom && rectDockArea.Height > 0)
             {
-                if (DockPanel.DockBottomPortion > 1)
-                    DockPanel.DockBottomPortion = ClampPixelPortion(Height - offset);
-                else
-                    DockPanel.DockBottomPortion = ClampRatioPortion(DockPanel.DockBottomPortion - ((double)offset) / (double)rectDockArea.Height);
+                DockPanel.DockBottomPortion = ClampRatioPortion(((double)(Height - offset)) / rectDockArea.Height);
             }
             else if (DockState == DockState.DockTop && rectDockArea.Height > 0)
             {
-                if (DockPanel.DockTopPortion > 1)
-                    DockPanel.DockTopPortion = ClampPixelPortion(Height + offset);
-                else
-                    DockPanel.DockTopPortion = ClampRatioPortion(DockPanel.DockTopPortion + ((double)offset) / (double)rectDockArea.Height);
+                DockPanel.DockTopPortion = ClampRatioPortion(((double)(Height + offset)) / rectDockArea.Height);
             }
         }
 
@@ -235,11 +224,6 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (portion < min) return min;
             if (portion > max) return max;
             return portion;
-        }
-
-        private static double ClampPixelPortion(double pixels)
-        {
-            return pixels < MeasurePane.MinSize ? MeasurePane.MinSize : pixels;
         }
 
         #region IDragSource Members

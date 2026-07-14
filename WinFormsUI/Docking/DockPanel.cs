@@ -656,6 +656,10 @@ namespace WeifenLuo.WinFormsUI.Docking
                     int adjust = (dockLeftSize + dockRightSize) - (width - MeasurePane.MinSize);
                     dockLeftSize -= adjust / 2;
                     dockRightSize -= adjust / 2;
+                    if (dockLeftSize < MeasurePane.MinSize)
+                        dockLeftSize = MeasurePane.MinSize;
+                    if (dockRightSize < MeasurePane.MinSize)
+                        dockRightSize = MeasurePane.MinSize;
                 }
 
                 return dockState == DockState.DockLeft ? dockLeftSize : dockRightSize;
@@ -677,6 +681,10 @@ namespace WeifenLuo.WinFormsUI.Docking
                     int adjust = (dockTopSize + dockBottomSize) - (height - MeasurePane.MinSize);
                     dockTopSize -= adjust / 2;
                     dockBottomSize -= adjust / 2;
+                    if (dockTopSize < MeasurePane.MinSize)
+                        dockTopSize = MeasurePane.MinSize;
+                    if (dockBottomSize < MeasurePane.MinSize)
+                        dockBottomSize = MeasurePane.MinSize;
                 }
 
                 return dockState == DockState.DockTop ? dockTopSize : dockBottomSize;
@@ -688,44 +696,49 @@ namespace WeifenLuo.WinFormsUI.Docking
         protected override void OnLayout(LayoutEventArgs levent)
         {
             SuspendLayout(true);
-
-            AutoHideStripControl.Bounds = ClientRectangle;
-
-            CalculateDockPadding();
-
-            DockWindows[DockState.DockLeft].Width = GetDockWindowSize(DockState.DockLeft);
-            DockWindows[DockState.DockRight].Width = GetDockWindowSize(DockState.DockRight);
-            DockWindows[DockState.DockTop].Height = GetDockWindowSize(DockState.DockTop);
-            DockWindows[DockState.DockBottom].Height = GetDockWindowSize(DockState.DockBottom);
-
-            AutoHideWindow.Bounds = GetAutoHideWindowBounds(AutoHideWindowRectangle);
-
-            DockWindow documentDockWindow = DockWindows[DockState.Document];
-
-            if (ReferenceEquals(documentDockWindow.Parent, AutoHideWindow.Parent))
+            try
             {
-                AutoHideWindow.Parent.Controls.SetChildIndex(AutoHideWindow, 0);
-                documentDockWindow.Parent.Controls.SetChildIndex(documentDockWindow, 1);
-            }
-            else
-            {
-                documentDockWindow.BringToFront();
-                AutoHideWindow.BringToFront();
-            }
+                AutoHideStripControl.Bounds = ClientRectangle;
 
-            base.OnLayout(levent);
+                CalculateDockPadding();
 
-            if (DocumentStyle == DocumentStyle.SystemMdi && MdiClientExists)
-            {
-                SetMdiClientBounds(SystemMdiClientBounds);
-                InvalidateWindowRegion();
-            }
-            else if (DocumentStyle == DocumentStyle.DockingMdi)
-            {
-                InvalidateWindowRegion();
-            }
+                DockWindows[DockState.DockLeft].Width = GetDockWindowSize(DockState.DockLeft);
+                DockWindows[DockState.DockRight].Width = GetDockWindowSize(DockState.DockRight);
+                DockWindows[DockState.DockTop].Height = GetDockWindowSize(DockState.DockTop);
+                DockWindows[DockState.DockBottom].Height = GetDockWindowSize(DockState.DockBottom);
 
-            ResumeLayout(true, true);
+                AutoHideWindow.Bounds = GetAutoHideWindowBounds(AutoHideWindowRectangle);
+
+                DockWindow documentDockWindow = DockWindows[DockState.Document];
+
+                if (ReferenceEquals(documentDockWindow.Parent, AutoHideWindow.Parent))
+                {
+                    AutoHideWindow.Parent.Controls.SetChildIndex(AutoHideWindow, 0);
+                    documentDockWindow.Parent.Controls.SetChildIndex(documentDockWindow, 1);
+                }
+                else
+                {
+                    documentDockWindow.BringToFront();
+                    AutoHideWindow.BringToFront();
+                }
+
+                base.OnLayout(levent);
+
+                if (DocumentStyle == DocumentStyle.SystemMdi && MdiClientExists)
+                {
+                    SetMdiClientBounds(SystemMdiClientBounds);
+                    InvalidateWindowRegion();
+                }
+                else if (DocumentStyle == DocumentStyle.DockingMdi)
+                {
+                    InvalidateWindowRegion();
+                }
+            }
+            finally
+            {
+                // Never leave SuspendLayout/SuspendFocusTracking permanently raised if layout throws
+                ResumeLayout(true, true);
+            }
         }
 
         internal Rectangle GetTabStripRectangle(DockState dockState)
