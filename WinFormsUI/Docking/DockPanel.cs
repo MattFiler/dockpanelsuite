@@ -643,8 +643,12 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (dockState == DockState.DockLeft || dockState == DockState.DockRight)
             {
                 int width = ClientRectangle.Width - DockPadding.Left - DockPadding.Right;
-                int dockLeftSize = m_dockLeftPortion >= 1 ? (int)m_dockLeftPortion : (int)(width * m_dockLeftPortion);
-                int dockRightSize = m_dockRightPortion >= 1 ? (int)m_dockRightPortion : (int)(width * m_dockRightPortion);
+                // Always size from a ratio. Values >= 1 are treated as leftover absolute pixels
+                // from older layouts and converted so window resize keeps scaling the strips.
+                double leftRatio = PortionAsRatio(m_dockLeftPortion, width);
+                double rightRatio = PortionAsRatio(m_dockRightPortion, width);
+                int dockLeftSize = (int)(width * leftRatio);
+                int dockRightSize = (int)(width * rightRatio);
 
                 if (dockLeftSize < MeasurePane.MinSize)
                     dockLeftSize = MeasurePane.MinSize;
@@ -668,8 +672,10 @@ namespace WeifenLuo.WinFormsUI.Docking
             if (dockState == DockState.DockTop || dockState == DockState.DockBottom)
             {
                 int height = ClientRectangle.Height - DockPadding.Top - DockPadding.Bottom;
-                int dockTopSize = m_dockTopPortion >= 1 ? (int)m_dockTopPortion : (int)(height * m_dockTopPortion);
-                int dockBottomSize = m_dockBottomPortion >= 1 ? (int)m_dockBottomPortion : (int)(height * m_dockBottomPortion);
+                double topRatio = PortionAsRatio(m_dockTopPortion, height);
+                double bottomRatio = PortionAsRatio(m_dockBottomPortion, height);
+                int dockTopSize = (int)(height * topRatio);
+                int dockBottomSize = (int)(height * bottomRatio);
 
                 if (dockTopSize < MeasurePane.MinSize)
                     dockTopSize = MeasurePane.MinSize;
@@ -691,6 +697,17 @@ namespace WeifenLuo.WinFormsUI.Docking
             }
 
             return 0;
+        }
+
+        private static double PortionAsRatio(double portion, int axisSize)
+        {
+            if (portion <= 0)
+                return 0.25;
+            if (portion < 1.0)
+                return portion;
+            if (axisSize <= 0)
+                return 0.25;
+            return Math.Max(0.05, Math.Min(0.95, portion / axisSize));
         }
 
         protected override void OnLayout(LayoutEventArgs levent)

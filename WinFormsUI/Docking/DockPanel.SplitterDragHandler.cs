@@ -94,14 +94,19 @@ namespace WeifenLuo.WinFormsUI.Docking
             protected override void OnEndDrag(bool abort)
             {
                 DockPanel.SuspendLayout(true);
+                try
+                {
+                    Outline.Close();
 
-                Outline.Close();
+                    if (!abort)
+                        DragSource.MoveSplitter(GetMovingOffset(Control.MousePosition));
 
-                if (!abort)
-                    DragSource.MoveSplitter(GetMovingOffset(Control.MousePosition));
-
-                DragSource.EndDrag();
-                DockPanel.ResumeLayout(true, true);
+                    DragSource.EndDrag();
+                }
+                finally
+                {
+                    DockPanel.ResumeLayout(true, true);
+                }
             }
 
             private int GetMovingOffset(Point ptMouse)

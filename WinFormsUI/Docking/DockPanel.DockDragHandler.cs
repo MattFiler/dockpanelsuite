@@ -449,16 +449,20 @@ namespace WeifenLuo.WinFormsUI.Docking
             protected override void OnEndDrag(bool abort)
             {
                 DockPanel.SuspendLayout(true);
+                try
+                {
+                    Outline.Close();
+                    Indicator.Close();
 
-                Outline.Close();
-                Indicator.Close();
+                    EndDrag(abort);
 
-                EndDrag(abort);
-
-                // Queue a request to layout all children controls
-                DockPanel.PerformMdiClientLayout();
-
-                DockPanel.ResumeLayout(true, true);
+                    // Queue a request to layout all children controls
+                    DockPanel.PerformMdiClientLayout();
+                }
+                finally
+                {
+                    DockPanel.ResumeLayout(true, true);
+                }
 
                 DragSource.EndDrag();
 

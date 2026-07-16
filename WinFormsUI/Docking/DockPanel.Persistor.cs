@@ -568,11 +568,12 @@ namespace WeifenLuo.WinFormsUI.Docking
                 }
 
                 dockPanel.SuspendLayout(true);
-
-                dockPanel.DockLeftPortion = dockPanelStruct.DockLeftPortion;
-                dockPanel.DockRightPortion = dockPanelStruct.DockRightPortion;
-                dockPanel.DockTopPortion = dockPanelStruct.DockTopPortion;
-                dockPanel.DockBottomPortion = dockPanelStruct.DockBottomPortion;
+                try
+                {
+                    dockPanel.DockLeftPortion = dockPanelStruct.DockLeftPortion;
+                    dockPanel.DockRightPortion = dockPanelStruct.DockRightPortion;
+                    dockPanel.DockTopPortion = dockPanelStruct.DockTopPortion;
+                    dockPanel.DockBottomPortion = dockPanelStruct.DockBottomPortion;
 
                 // Set DockWindow ZOrders
                 int prevMaxDockWindowZOrder = int.MaxValue;
@@ -726,8 +727,11 @@ namespace WeifenLuo.WinFormsUI.Docking
                 for (int i = dockPanel.Contents.Count - 1; i >= 0; i--)
                     if (dockPanel.Contents[i] is DummyContent)
                         dockPanel.Contents[i].DockHandler.Form.Close();
-
-                dockPanel.ResumeLayout(true, true);
+                }
+                finally
+                {
+                    dockPanel.ResumeLayout(true, true);
+                }
             }
 
             private static bool MoveToNextElement(XmlTextReader xmlIn)
